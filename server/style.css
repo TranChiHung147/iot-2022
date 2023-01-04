@@ -1,0 +1,126 @@
+*{
+	box-sizing: border-box;
+	margin: 0;
+}
+
+/* Header style*/
+
+.header {
+	height: 12vh;
+	flex-direction: row;
+	justify-content: space-between;
+	border-bottom: 2px solid black;
+	color: white;
+	padding-top: 2vh;
+    background-image: linear-gradient(to bottom right, green, yellow);
+}
+
+.header p {
+	text-align: center;
+	font-weight: 700;
+	font-size: 40px;
+}
+
+.alert #tempAlert, .alert #moistAlert, .alert #methaneAlert {
+	text-align: left;
+}
+
+.progress {
+	margin-bottom: 2vh;
+}
+
+/* Main style*/
+
+main {
+	font-size: 20px;
+    height: 100vh;
+    background-image: url("backgroundImage.jpg");
+	padding-top: 10vh;
+}
+
+.alert {
+	text-align: center;
+	width: 70vw;
+	padding: 2vw;
+    margin: 0 auto;
+	border-radius: 10px;
+	background-color: azure;
+}
+
+.container {
+	width: 70vw;
+    margin: 0 auto;
+	border-radius: 10px;
+	padding: 20px;
+	margin-top: 5vh;
+}
+
+.alert {
+	flex-basis: 80vw;
+}
+
+.item {
+    height: 20vh;
+    float: left;
+}
+
+.item svg {
+    width: 80%;
+    height: 15vh;
+}
+
+.content {
+    background-color: azure;
+    border-radius: 15px;
+    margin: 10px;
+    padding: 7px;
+    text-align: center;
+}
+
+.content .left {
+    width: 60%;
+    float: left;
+}
+
+.content .right {
+    width: 40%;
+    float: left;
+	vertical-align: middle;
+}
+
+.right p {
+	font-weight: 800;
+	font-size: 25px;
+}
+
+.end_float {
+    clear: left;
+}
+
+/* Footer style*/
+footer {
+	text-align: center;
+	border-top: 2px solid black;
+	padding: 2vh;
+	font-size: 20px;
+    background-image: linear-gradient(to top left,purple, pink);
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+	.header p{
+		font-size: 40px;
+	}
+}
+
+@media (max-width: 1000px) {
+	.header p{
+		font-size: 40px;
+	}
+}
+
+@media (max-width: 700px) {
+	.header p {
+		font-size: 30px;
+	}
+}

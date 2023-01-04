@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Hệ thống ủ phân IOT</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+	<link rel="stylesheet" href="style.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+</head>
+
+<body>
+	<header class="header">
+		<p>Compost Symtem</p>
+	</header>
+	<main>
+		<div class="alert">
+			<p>Tiến trình: <span id="progress">0</span>/35 ngày </p>
+			<div class="progress">
+				<div id="progress_bar" class="progress-bar bg-success" role="progressbar" style="width: 25%"
+					aria-valuemin="0" aria-valuemax="35"></div>
+			</div>
+			<p id="tempAlert"></p>
+			<p id="moistAlert"></p>
+			<p id="methaneAlert"></p>
+		</div>
+
+		<div class="container">
+
+			<div class="item col-lg-4 col-sm-6">
+				<div class="content">
+					<div class="left">
+						<img src="images/temp.png" alt="temperature" width="80%">
+					</div>
+					<div class="right">
+						<p>Nhiệt độ</p>
+						<p><span id="temp">0</span> <span>&deg;C</span></p>
+					</div>
+					<p class="end_float"></p>
+				</div>
+			</div>
+
+			<div class="item col-lg-4 col-sm-6">
+				<div class="content">
+					<div class="left">
+						<img src="images/humi.jpg" alt="temperature" width="80%">
+					</div>
+					<div class="right">
+						<p><strong>Độ ẩm</strong></p>
+						<p><span id="humi">0</span> %</p>
+					</div>
+					<p class="end_float"></p>
+				</div>
+			</div>
+
+			<div class="item col-lg-4 col-sm-6">
+				<div class="content">
+					<div class="left">
+						<img src="images/methan.jpg" alt="temperature" width="80%">
+					</div>
+					<div class="right">
+						<p>Khí metan</p>
+						<p><span id="metan">0</span> <span>PPM</span></p>
+					</div>
+					<p class="end_float"></p>
+				</div>
+			</div>
+			<p style="clear: left;"></p>
+		</div>
+	</main>
+	<script>
+		const tempMessageArray = [
+			"Phân hữu cơ của bạn ở mức tối ưu.", //0
+			"Phân hữu cơ của bạn đã sẵn sàng sử dụng", //1
+			"Chu trình làm nóng phân hữu cơ của bạn đã hoàn tất và đang ở giai đoạn đóng rắn", //2
+			"Phân của bạn đang đạt nhiệt độ không an toàn, lập tức đảo phân ủ và thêm nước", //3
+			"Phân hữu cơ của bạn đã đạt đến nhiệt độ không tốt cho sức khỏe. Khi thuận tiện hãy đảo phân và thêm nguyên liệu giàu carbon", //4
+			"Nhiệt độ phân trộn của bạn cao hơn một chút so với nhiệt độ tối ưu. Bạn có thể đảo trộn phân ủ và thêm nguyên liệu giàu carbon", //5
+			"Nhiệt độ phân trộn của bạn cao hơn một chút so với mức tối ưu, nhưng đang bắt đầu hạ nhiệt. Tôi sẽ cho bạn biết nếu cần thực hiện bất kỳ hành động nào", //6
+			"Phân hữu cơ của bạn đang ở nhiệt độ tối ưu.",//7
+			"Nhiệt độ phân trộn của bạn thấp hơn mức tối ưu, nhưng đang bắt đầu nóng lên. Tôi sẽ cho bạn biết nếu cần thực hiện bất kỳ hành động nào.",//8
+			"Nhiệt độ phân trộn của bạn thấp hơn mức tối ưu và đang tiếp tục nguội. Khi thuận tiện, hãy đảo phân trộn và thêm nguyên liệu giàu Nitơ.",//9
+			"Nhiệt độ phân trộn của bạn thấp hơn mức tối ưu và đang tiếp tục nguội đi. Nhiệt độ xung quanh thấp, vì vậy bạn nên che phủ phân trộn của mình để tiếp tục ủ phân hiếu khí."//10
+		]
+
+		const moistureMessageArray = [
+			"Độ ẩm cho phân trộn của bạn quá ẩm ướt. Hãy lật phân trộn của bạn và thêm nguyên liệu giàu Nitơ.", //0
+			"Độ ẩm của phân trộn của bạn quá ướt nhưng đang bắt đầu khô. Tôi sẽ cho bạn biết nếu cần thực hiện bất kỳ hành động nào.",//1
+			"Phân hữu cơ của bạn đang ở độ ẩm tối ưu.", //2
+			"Độ ẩm trong phân ủ của bạn quá khô, nhưng đang bắt đầu đạt độ ẩm tối ưu. Tôi sẽ cho bạn biết nếu cần thực hiện bất kỳ hành động nào.", //3
+			"Phân trộn của bạn quá khô và cần sự chú ý của bạn. Bạn cần lật và tưới nước cho phân trộn của mình." //4
+		]
+
+		const methaneMessageArray = [
+			"Nồng độ khí metan ở ngưỡng an toàn",
+			"Nồng độ khí metan ở mức cảnh báo",
+			"Nồng độ khí metan ở mức nguy hiểm"
+		]
+
+		function write_into_tag(id, content) {
+			document.getElementById(id).innerHTML = content;
+		}
+
+		function request_and_execute() {
+			$.ajax({
+				url: 'response.php',
+				type: 'post'
+			}).done(function (server_data) {
+				const data = JSON.parse(server_data);
+				write_into_tag('temp', data['temp']);
+				write_into_tag('humi', data['humi']);
+				write_into_tag('metan', data['metan']);
+				write_into_tag('progress', data['progress']);
+				percent = data['progress'] / 35 * 100;
+				$("#progress_bar").attr("style", `width: ${percent}% `);
+				tempalert = data['tempAlert'];
+				moistalert = data['moistAlert'];
+				methanealert = data['methaneAlert'];
+				$("#tempAlert").text("Nhiệt độ: " + tempMessageArray[tempalert]);
+				$("#moistAlert").text("Độ ẩm: " + moistureMessageArray[moistalert]);
+				$("#methaneAlert").text("Khí metan: " + methaneMessageArray[methanealert]);
+			}).fail(function (jqXHR, textStatus, errorThrown) {
+				console.log("fail" + errorThrown);
+			})
+		}
+
+		setInterval(request_and_execute, 1000);
+
+	</script>
+</body>
+
+</html>
